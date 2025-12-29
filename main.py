@@ -27,11 +27,18 @@ class DetectRequest(BaseModel):
 async def detect_json(req: DetectRequest):
 
     # 1️⃣ Download da imagem
-    resp = requests.get(
-        req.image,
-        timeout=10
-    )
-    resp.raise_for_status()
+    try:
+        resp = requests.get(req.image, timeout=10)
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "failed_to_fetch_image",
+                "message": str(e),
+                "image_url": req.image
+            }
+        )
 
     
     img = Image.open(BytesIO(resp.content)).convert("RGB")
@@ -87,9 +94,19 @@ async def detect_json(req: DetectRequest):
 @app.post("/detect/image")
 def detect_image(req: DetectRequest):
 
-    # 1️⃣ Download da imagem
-    resp = requests.get(req.image, timeout=10)
-    resp.raise_for_status()
+    # Download da imagem
+    try:
+        resp = requests.get(req.image, timeout=10)
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "failed_to_fetch_image",
+                "message": str(e),
+                "image_url": req.image
+            }
+        )
 
     img = Image.open(BytesIO(resp.content)).convert("RGB")
     img_np = np.array(img)
@@ -97,12 +114,12 @@ def detect_image(req: DetectRequest):
     # Converter RGB -> BGR (OpenCV)
     img_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
 
-    # 2️⃣ Inferência
+    # Inferência
     start = time.perf_counter()
     results = model(img_np, conf=req.conf)
     inference_time_ms = (time.perf_counter() - start) * 1000
 
-     # 3️⃣ Desenhar bounding boxes
+     # Desenhar bounding boxes
     for r in results:
         if r.boxes is None:
             continue
@@ -152,12 +169,12 @@ def detect_image(req: DetectRequest):
                 2
             )
 
-    # 4️⃣ Converter para PNG
+    # Converter para PNG
     success, png = cv2.imencode(".png", img_bgr)
     if not success:
         raise HTTPException(status_code=500, detail="Erro ao gerar imagem PNG")
 
-    # 5️⃣ Retornar imagem
+    # Retornar imagem
     return Response(
         content=png.tobytes(),
         media_type="image/png",
