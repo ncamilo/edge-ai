@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+requests
+pillow
+numpy
+ultralytics
+opencv-python-headless
