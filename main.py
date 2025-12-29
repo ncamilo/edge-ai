@@ -26,7 +26,7 @@ class DetectRequest(BaseModel):
 @app.post("/detect/json")
 async def detect_json(req: DetectRequest):
 
-    # 1️⃣ Download da imagem
+    # Download da imagem
     try:
         resp = requests.get(req.image, timeout=10)
         resp.raise_for_status()
@@ -44,7 +44,7 @@ async def detect_json(req: DetectRequest):
     img = Image.open(BytesIO(resp.content)).convert("RGB")
     img_np = np.array(img)
 
-    # 2️⃣ Inferência
+    # Inferência
     start = time.perf_counter()
     results = model(img_np, conf=req.conf)
     inference_time_ms = (time.perf_counter() - start) * 1000
@@ -53,7 +53,7 @@ async def detect_json(req: DetectRequest):
     count_by_class = defaultdict(int)
     classes_detected = set()
 
-    # 3️⃣ Processar resultados
+    # Processar resultados
     for r in results:
         if r.boxes is None:
             continue
@@ -80,7 +80,7 @@ async def detect_json(req: DetectRequest):
             classes_detected.add(cls_name)
             count_by_class[cls_name] += 1
 
-    # 4️⃣ Retorno JSON
+    # Retorno JSON
     return {
         "image_url": req.image,
         "model": model.model_name if hasattr(model, "model_name") else "yolov8",
