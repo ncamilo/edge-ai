@@ -20,7 +20,7 @@ import cv2
 from fastapi.responses import Response
 
 
-app = FastAPI(debug=True)
+app = FastAPI()
 
 model = YOLO("yolov8n.pt")
 
