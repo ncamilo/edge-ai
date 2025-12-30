@@ -1,3 +1,10 @@
+# main.py
+# Aplicação FastAPI para detecção de objetos usando YOLOv8
+# Fornece endpoints para retornar resultados em JSON e imagens anotadas.
+# Autor: Nelson Almeida
+# Data: 2024-06-10
+# Licença: Apache-2.0
+
 import time
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, HttpUrl
@@ -87,7 +94,8 @@ async def detect_json(req: DetectRequest):
         "inference_time_ms": round(inference_time_ms * 1000, 2),
         "detections": detections,
         "classes_detected": sorted(list(classes_detected)),
-        "count_by_class": dict(count_by_class)
+        "count_by_class": dict(count_by_class),
+        "inference_time": f"{inference_time_ms:.2f} ms"
     }
 
 

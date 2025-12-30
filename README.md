@@ -47,11 +47,11 @@ Executa a inferência e retorna os resultados em **JSON**.
 ```json
 {
   "image": "https://ultralytics.com/images/bus.jpg",
-  "confidence": 0.25
+  "confidence": 0.8
 }
 ```
 
-> `confidence` é opcional (default: 0.25)
+> `confidence` é opcional (default: 0.8)
 
 #### Resposta
 ```json
@@ -72,7 +72,7 @@ Executa a inferência e retorna os resultados em **JSON**.
     "model": "yolov8n.pt",
     "inference_time_ms": 42.3,
     "image_source": "https://ultralytics.com/images/bus.jpg",
-    "confidence_threshold": 0.25
+    "confidence_threshold": 0.8
   }
 }
 ```
@@ -87,7 +87,7 @@ Executa a inferência e retorna a **imagem anotada** (PNG).
 ```json
 {
   "image": "https://ultralytics.com/images/bus.jpg",
-  "confidence": 0.25
+  "confidence": 0.8
 }
 ```
 
@@ -231,3 +231,11 @@ Este projeto demonstra:
 ## Autor
 
 Desenvolvido por **Nelson Almeida**
+
+---
+
+## Licença
+
+Apache-2.0 License
+
+---
